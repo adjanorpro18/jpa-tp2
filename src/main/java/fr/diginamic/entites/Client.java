@@ -1,13 +1,15 @@
 package fr.diginamic.entites;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Classe Client avec ses attributs identifiant, nom et prenom
  */
 
 @Entity
-@Table
+@Table(name ="CLIENT")
 public class Client {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,6 +23,12 @@ public class Client {
 
     @Column
     private String prenom;
+
+    //Jointure avec la table emprunt
+    //Un client peut effectuer plusieurs emprunts
+
+    @OneToMany(mappedBy = "client")
+    private Set<Emprunt> emprunts; // Reference vers les emprunts
 
 
     /**
@@ -39,6 +47,7 @@ public class Client {
         this.id = id;
         this.nom = nom;
         this.prenom = prenom;
+        emprunts = new HashSet<>();
     }
 
 
@@ -83,4 +92,21 @@ public class Client {
     public void setPrenom(String prenom) {
         this.prenom = prenom;
     }
+
+
+    /**
+     * @return les emprunts rattachés à un client donné
+     */
+    public Set<Emprunt> getEmprunts() {
+        return emprunts;
+    }
+
+    /**
+     * @param emprunts setter les emprunts rattachés à un client donné
+     */
+
+    public void setEmprunts(Set<Emprunt> emprunts) {
+        this.emprunts = emprunts;
+    }
+
 }

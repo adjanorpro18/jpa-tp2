@@ -2,6 +2,8 @@ package fr.diginamic.entites;
 
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Classe Livre avec un identifiant, le titre et le nom de l'auteur
@@ -21,6 +23,13 @@ public class Livre {
     @Column
     private String auteur;
 
+    //Relation ManyToMany avec la table Emprunt
+    @ManyToMany
+    @JoinTable(name = "COMPO",
+            joinColumns = @JoinColumn(name = "idLiv", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "idEmp", referencedColumnName = "id")
+    )
+    private Set<Emprunt> emprunts;
 
     /**
      * Constructeur par default
@@ -39,6 +48,7 @@ public class Livre {
         this.id = id;
         this.titre = titre;
         this.auteur = auteur;
+        emprunts = new HashSet<>();
     }
 
     /**
@@ -102,15 +112,26 @@ public class Livre {
     }
 
     /**
-     * Methode toString qui retourne les données de la classe Livre
-     * @return
+     * @return Liste des emprunts
      */
+    public Set<Emprunt> getEmprunts() {
+        return emprunts;
+    }
+
+    /**
+     * @param emprunts permet de setter la liste des emprunts
+     */
+    public void setEmprunts(Set<Emprunt> emprunts) {
+        emprunts = emprunts;
+    }
+
     @Override
     public String toString() {
         return "Livre{" +
                 "id=" + id +
                 ", titre='" + titre + '\'' +
                 ", auteur='" + auteur + '\'' +
+                ", emprunts=" + emprunts +
                 '}';
     }
 }

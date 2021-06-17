@@ -2,6 +2,8 @@ package fr.diginamic.entites;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Classe Emprunt avec ses attributs identifiant, date de debut, date de fin, delai et l'identifiant du client
@@ -24,8 +26,22 @@ public class Emprunt {
     @Column
     private int delai;
 
-    @Column
-    private int idClient;
+
+    //Jointure avec la table client par la relation ManyToOne
+    //Plusieurs emprunts peuvent faire référence à un client
+
+    @ManyToOne
+    @JoinColumn(name="idClient") // Colonne de jointure dans la Table Client
+    private Client client;
+
+    //Relation ManyToMany avec la table Emprunt
+
+    @ManyToMany
+    @JoinTable(name= "COMPO",
+            joinColumns= @JoinColumn(name="idEmp", referencedColumnName = "id"),
+            inverseJoinColumns= @JoinColumn(name="idLiv",referencedColumnName = "id")
+    )
+    private Set<Livre> livres;
 
 
     /**
@@ -40,14 +56,18 @@ public class Emprunt {
      * @param dateDebut qui est la date de début de l'emprunt
      * @param dateFin qui est la date de fin de l'emprunt
      * @param delai qui est la durée qui separe les deux dates
-     * @param idClient qui est l'identifiant du client concerné par l'emprunt
+     *
      */
-    public Emprunt(int id, LocalDate dateDebut,LocalDate dateFin, int delai, int idClient) {
+    public Emprunt(int id, LocalDate dateDebut,LocalDate dateFin, int delai) {
         this.id = id;
         this.dateDebut = dateDebut;
         this.dateFin = dateFin;
         this.delai = delai;
-        this.idClient = idClient;
+        livres = new HashSet<>();
+
+
+
+
     }
 
     /**
@@ -108,18 +128,30 @@ public class Emprunt {
         this.delai = delai;
     }
 
-    /**
-     * @return l'identifiant du client concerné par l'emprunt
-     */
-    public int getIdClient() {
-        return idClient;
+
+    public Client getClient() {
+        return client;
     }
 
-    /**
-     * @param idClient qui permet de setter l'identifiant du client de l'emprunt
-     */
-    public void setIdClient(int idClient) {
-        this.idClient = idClient;
+    public void setClient(Client client) {
+        this.client = client;
     }
 
+    public Set<Livre> getLivres() {
+        return livres;
+    }
+
+    public void setLivres(Set<Livre> livres) {
+        this.livres = livres;
+    }
+
+    @Override
+    public String toString() {
+        return "Emprunt{" +
+                "id=" + id +
+                ", dateDebut=" + dateDebut +
+                ", dateFin=" + dateFin +
+                ", delai=" + delai +
+                '}';
+    }
 }
